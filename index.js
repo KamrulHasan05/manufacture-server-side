@@ -43,6 +43,18 @@ async function run() {
             const result = await usersCollection.findOne(filter);
             res.send(result);
         })
+        // update user info
+        app.put('/users', async (req, res) => {
+            const userData = req.body;
+            const email = userData.email;
+            const filter = { email };
+            const option = { upsert: true };
+            const update = {
+                $set: userData
+            };
+            const result = await usersCollection.updateOne(filter, update, option);
+            res.send(result);
+        })
 
 
     }
