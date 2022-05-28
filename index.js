@@ -92,6 +92,54 @@ async function run() {
             const result = await reviewsCollection.find().toArray();
             res.send(result);
         })
+        // post orders
+        app.post('/orders', async (req, res) => {
+            const order = req.body;
+            const result = await ordersCollection.insertOne(order);
+            res.send(result);
+        })
+        // get orders by user
+        app.get('/orders', async (req, res) => {
+            const email = req.query.email;
+            const filter = { email }
+            const result = await ordersCollection.find(filter).toArray();
+            res.send(result);
+        })
+        // get orders by id for payment
+        app.get('/orders/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+            const result = await ordersCollection.findOne(filter);
+            res.send(result);
+        })
+        // update payment
+        app.patch('/orders/:id', async (req, res) => {
+            const id = req.params.id;
+            const payment = req.body;
+            const filter = { _id: ObjectId(id) };
+            const updatedDoc = {
+                $set: {
+                    paid: true,
+                    transactionId: payment.transactionId
+                }
+            }
+
+            const result = await paymentCollection.insertOne(payment);
+            const updatedBooking = await ordersCollection.updateOne(filter, updatedDoc);
+            res.send(updatedBooking);
+        })
+        // get all orders
+        app.get('/allorders', async (req, res) => {
+            const result = await ordersCollection.find().toArray();
+            res.send(result);
+        })
+        // delete/ cancel order
+        app.delete('/orders/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await ordersCollection.deleteOne(query);
+            res.send(result);
+        })
 
     }
     finally {
