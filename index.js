@@ -13,8 +13,10 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run() {
     try {
         await client.connect();
-        const motherboardCollection = client.db('gigabyte').collection('motherboard');
-
+        const usersCollection = client.db("users").collection("info");
+        const partsCollection = client.db("processor").collection("details");
+        const ordersCollection = client.db("orders").collection("details");
+        const reviewsCollection = client.db("reviews").collection("details");
 
     }
     finally {
