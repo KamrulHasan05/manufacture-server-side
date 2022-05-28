@@ -18,6 +18,21 @@ async function run() {
         const ordersCollection = client.db("orders").collection("details");
         const reviewsCollection = client.db("reviews").collection("details");
 
+        // make user and send token
+        app.put('/login', async (req, res) => {
+            const user = req.body;
+            const email = user.email;
+            const filter = { email };
+            const option = { upsert: true };
+            const updateDoc = {
+                $set: user
+            }
+            const result = await usersCollection.updateOne(filter, updateDoc, option);
+            const token = jwt.sign({ email }, process.env.ACCESS_TOKEN, { expiresIn: '2h' })
+            res.send({ token, result });
+        })
+
+
     }
     finally {
         //  await client.close();
